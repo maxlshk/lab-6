@@ -20,6 +20,7 @@ const Input: React.FC<InputProps> = ({
   required,
   min,
   max,
+  minLength,
   type = 'text',
   ...rest
 }) => {
@@ -70,6 +71,8 @@ const Input: React.FC<InputProps> = ({
       parseFloat(value) > parseFloat(max as string)
     ) {
       errorMessage = `Value must be at most ${max}`;
+    } else if (minLength !== undefined && value.length < minLength) {
+      errorMessage = `Value must be at least ${minLength} characters`;
     } else {
       errorMessage = undefined;
     }
@@ -78,6 +81,14 @@ const Input: React.FC<InputProps> = ({
 
     if (rest.onBlur) {
       rest.onBlur(e);
+    }
+  };
+
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    setLocalError(undefined);
+
+    if (rest.onFocus) {
+      rest.onFocus(e);
     }
   };
 
@@ -102,6 +113,7 @@ const Input: React.FC<InputProps> = ({
           max={max}
           type={inputType}
           onBlur={handleBlur}
+          onFocus={handleFocus}
           {...rest}
         />
         {type === 'password' && (

@@ -4,6 +4,8 @@ import ErrorPage from '../pages/ErrorPage';
 import Dashboard from '../pages/Dashboard';
 import LoginPage, { action as loginAction } from '../pages/LoginPage';
 import { ROUTER_KEYS } from '../keys';
+import SignupPage, { action as signupAction } from '../pages/SignupPage';
+import AuthorizedLayout from '../layouts/AuthorizedLayout';
 
 function AppRouter() {
   const router = createBrowserRouter([
@@ -13,11 +15,29 @@ function AppRouter() {
       errorElement: <ErrorPage />,
       id: 'root',
       children: [
-        { index: true, element: <Dashboard /> },
+        {
+          index: true,
+          loader: RootLayout.loader,
+        },
         {
           path: ROUTER_KEYS.LOGIN,
           element: <LoginPage />,
           action: loginAction,
+        },
+        {
+          path: ROUTER_KEYS.SIGNUP,
+          element: <SignupPage />,
+          action: signupAction,
+        },
+        {
+          element: <AuthorizedLayout />,
+          loader: AuthorizedLayout.loader,
+          children: [
+            {
+              path: ROUTER_KEYS.DASHBOARD,
+              element: <Dashboard />,
+            },
+          ],
         },
       ],
     },

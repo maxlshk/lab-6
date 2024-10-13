@@ -31,6 +31,10 @@ export const loginUser = async (
   return user;
 };
 
+export const getUserById = async (userId: string): Promise<IUser | null> => {
+  return UserModel.findById(userId);
+};
+
 export const saveRefreshToken = async (
   userId: string,
   refreshToken: string

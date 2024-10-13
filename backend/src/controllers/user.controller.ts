@@ -1,4 +1,7 @@
-import { generateTokens } from '@/middleware/auth.middleware';
+import {
+  generateTokens,
+  verifyRefreshToken,
+} from '@/middleware/auth.middleware';
 import { Request, Response } from 'express';
 import * as userService from '@/services/user.service';
 import { IUser } from '@/models/User';
@@ -9,7 +12,9 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
     res.status(201).json({ message: 'User created', userId: user.id });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error creating user' });
+    res.status(400).json({
+      message: error instanceof Error ? error.message : 'Error signing up',
+    });
   }
 };
 
@@ -31,7 +36,27 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error logging in' });
+    res.status(400).json({
+      message: error instanceof Error ? error.message : 'Error logging in',
+    });
+  }
+};
+
+export const refreshToken = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { refreshToken } = req.body;
+    const userId = await verifyRefreshToken(refreshToken);
+    const user = await userService.getUserById(userId);
+    if (user) {
+      const tokens = generateTokens(user);
+      await userService.saveRefreshToken(user.id, tokens.refreshToken);
+      res.json(tokens);
+    }
+  } catch (error) {
+    res.status(401).json({ message: 'invalid refresh token' });
   }
 };
 
@@ -43,6 +68,9 @@ export const getProfile = async (
     const user = req.user as IUser;
     res.json({ user });
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching profile' });
+    res.status(400).json({
+      message:
+        error instanceof Error ? error.message : 'Error getting the user',
+    });
   }
 };

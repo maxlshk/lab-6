@@ -1,11 +1,14 @@
+// Button.tsx
 import React, { ButtonHTMLAttributes, ReactNode } from 'react';
 import classNames from 'classnames';
+import { ArrowPathIcon } from '@heroicons/react/24/solid';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   color?: 'blue' | 'gray' | 'black' | 'red' | 'green';
   size?: 'sm' | 'md' | 'lg';
   variant?: 'filled' | 'outlined' | 'text';
   fullWidth?: boolean;
+  isLoading?: boolean;
   className?: string;
   children: ReactNode;
 }
@@ -16,12 +19,14 @@ const Button: React.FC<ButtonProps> = ({
   size = 'md',
   variant = 'filled',
   fullWidth = false,
+  isLoading = false,
   className = '',
   children,
+  disabled,
   ...rest
 }) => {
   const baseStyles =
-    'inline-flex items-center justify-center font-medium rounded-lg shadow-md focus:outline-none';
+    'inline-flex items-center justify-center font-medium rounded-lg focus:outline-none';
 
   const colorClasses: Record<string, string> = {
     blue: 'text-blue-500',
@@ -62,6 +67,9 @@ const Button: React.FC<ButtonProps> = ({
       ? colorClasses[color]
       : filledClasses[color];
 
+  const disabledClass =
+    isLoading || disabled ? 'opacity-50 cursor-not-allowed' : '';
+
   return (
     <button
       type={type}
@@ -70,11 +78,17 @@ const Button: React.FC<ButtonProps> = ({
         variantClass,
         sizeClasses[size],
         widthClass,
+        disabledClass,
         className
       )}
+      disabled={isLoading || disabled}
       {...rest}
     >
-      {children}
+      {isLoading ? (
+        <ArrowPathIcon className="w-5 h-5 animate-spin" />
+      ) : (
+        children
+      )}
     </button>
   );
 };

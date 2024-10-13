@@ -6,6 +6,7 @@ const router: Router = Router();
 
 router.post('/signup', userController.signup);
 router.post('/login', userController.login);
+router.post('/refresh-token', userController.refreshToken);
 
 router.get('/profile', authenticateJwt, userController.getProfile);
 

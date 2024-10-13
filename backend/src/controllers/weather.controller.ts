@@ -6,24 +6,19 @@ export const getWeather = async (
   res: Response
 ): Promise<void> => {
   try {
-    const location = 'San Francisco';
+    const { latitude, longitude } = req.query;
 
-    const locationResponse = await axios.get(
-      `https://www.metaweather.com/api/location/search/`,
-      {
-        params: { query: location },
-      }
-    );
-
-    if (locationResponse.data.length === 0) {
-      res.status(404).json({ message: 'Location not found' });
+    if (!latitude || !longitude) {
+      res.status(400).json({
+        message: 'Missing required query parameters: latitude and longtitude',
+      });
       return;
     }
 
-    const woeid = locationResponse.data[0].woeid;
+    const API_KEY = process.env.WEATHER_API_KEY;
 
     const weatherResponse = await axios.get(
-      `https://www.metaweather.com/api/location/${woeid}/`
+      `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${latitude},${longitude}/next7days?key=${API_KEY}&include=days&elements=tempmax,tempmin,conditions,description,pressure,humidity,visibility,winddir,windspeed`
     );
 
     res.json(weatherResponse.data);
