@@ -18,7 +18,7 @@ export const getWeather = async (
     const API_KEY = process.env.WEATHER_API_KEY;
 
     const weatherResponse = await axios.get(
-      `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${latitude},${longitude}/next7days?key=${API_KEY}&include=days&elements=tempmax,tempmin,conditions,description,pressure,humidity,visibility,winddir,windspeed`
+      `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${latitude},${longitude}/next7days?key=${API_KEY}&unitGroup=uk&include=days&elements=tempmax,tempmin,conditions,description,pressure,humidity,visibility,winddir,windspeed`
     );
 
     res.json(weatherResponse.data);

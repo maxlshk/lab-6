@@ -72,13 +72,16 @@ const WeatherCard: React.FC<WeatherCardProps> = ({
           {skeleton ? <Skeleton baseColor="#d2d3d4" width={80} /> : conditions}
         </p>
       </div>
-      <p className="text-lg font-medium">
-        {skeleton ? (
-          <Skeleton baseColor="#d2d3d4" width={150} />
-        ) : (
-          `Max: ${tempmax}°C Min: ${tempmin}°C`
-        )}
-      </p>
+      {skeleton ? (
+        <Skeleton baseColor="#d2d3d4" width={150} />
+      ) : (
+        <p className="text-sm font-medium">
+          Max:
+          <span className="text-base"> {tempmax}°C </span>
+          Min:
+          <span className="text-base"> {tempmin}°C </span>
+        </p>
+      )}
       <div className="flex flex-1 flex-col gap-y-1.5 w-1/2 self-center">
         <p className="text-sm text-gray-600 flex justify-between">
           <b>Wind:</b>
